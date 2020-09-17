@@ -20,11 +20,11 @@ public:
 	}
 	mas(const mas &obj)
 	{
-		size = obj.size;
-		ms = new int[size];
+		this->size = obj.size;
+		this->ms = new int[size];
 		for (int i = 0; i < size; i++)
 		{
-			ms[i] = obj.ms[i];
+			this->ms[i] = obj.ms[i];
 		}
 	}
 	~mas() {
@@ -32,16 +32,24 @@ public:
 	}
 	int get_elem(int el)
 	{
-		return ms[el-1];
+		return ms[el];
 	}
 	void set_elem(int el,int new_el)
 	{
 		ms[el] = new_el;
 	}
-	void print()
+	void set_size(int sizer)
 	{
-		for(int i=0;i<size;i++)
-			cout<<ms[i]<<" ";
+		this->size = sizer;
+	}
+	int get_size(int sizer)
+	{sizer=this->size;
+	return sizer;
+	}
+	void memory(int sizer)
+	{
+		this->size = sizer;
+		this->ms = new int[size];
 	}
 	void shell()
 	{
@@ -69,7 +77,10 @@ public:
 	{
 		
 		if (this->size != second.size)
+		{
+			cout << "Different sizes";
 			return mas();
+		}
 		else
 		{
 			mas ms3(size);
@@ -96,11 +107,25 @@ public:
 			return ms3;
 		}
 	}
+	friend ostream& operator<<(ostream& out, const mas& m);
 };
+ostream& operator<<(ostream& out, const mas& m)
+{
+	for (int i = 0; i < m.size; i++)
+	{
+		out<<m.ms[i]<<" ";
+	}
+	out << "\n";
+	return out;
+}
 int main()
 {
 	int new_el;
-	mas m1(5),m2(5);
+	mas m1(5), m2(5);
+	mas* mtx;
+	int sizer;
+	int mtx_size;
+	//8.Создание экземпляров класса и перегрузка
 	cout << "MS1:" << endl;
 	for (int i = 0; i < 5; i++)
 	{
@@ -115,17 +140,90 @@ int main()
 		cin >> new_el;
 		m2.set_elem(i, new_el);
 	}
-	m1.print();
-	cout << "\n";
-	m2.print();
-	m1.shell();
-	m2.shell();
-	cout << "\n";
-    m1.print();
-	cout << "\n";
-	m2.print();
-	cout << "\n";
+	cout << "MS1:\n";
+	cout << m1;
+	cout << "MS2:\n";
+	cout << m2;
+	system("pause");
 	mas m3 = m1 - m2;
-	m3.print();
+	mas m4 = m1 + m2;
+	cout << "MS1-MS2:\n";
+	cout << m3;
+	cout << "MS1+MS2:\n";
+	cout << m4;
+	system("pause");
+	//9.Динамическое создание,копия и преобразование
+	cout << "Enter size of array: ";
+	do
+	{
+		cin >> sizer;
+	} while (sizer <= 0);
+	mas md1(sizer);
+	md1.set_size(sizer);
+	for (int i = 0; i < sizer; i++)
+	{
+		cout << "Enter element(md1): ";
+		cin >> new_el;
+		md1.set_elem(i, new_el);
+	}
+	mas md2(md1);
+	cout << "MS:\n";
+	cout << md1;
+	cout << "MS(copy):\n";
+	cout << md2;
+	system("pause");
+	for (int i = 0; i < sizer; i++)
+	{
+		new_el = md2.get_elem(i) + 2;
+		md2.set_elem(i, new_el);
+	}
+	cout << "MS(default):\n";
+	cout << md1;
+	cout << "MS+2:\n";
+	cout << md2;
+	system("pause");
+	//Динамическое создание массива экземпляров класса
+	cout << "Enter size of class array: ";
+	do
+	{
+		cin >> mtx_size;
+	} while (mtx_size <= 0);
+	mtx = new mas[mtx_size];
+	for (int i = 0; i < mtx_size; i++)
+	{
+		cout << "Enter size of " << i + 1 << " array in class array: ";
+		do
+		{
+			cin >> sizer;
+		} while (sizer <= 0);
+		mtx[i].memory(sizer);
+		for (int j = 0; j < sizer; j++)
+		{
+			cout << "Enter element: ";
+			cin >> new_el;
+			mtx[i].set_elem(j, new_el);
+		}
+	}
+	cout << "Class array:\n";
+	for (int i = 0; i < mtx_size; i++)
+	{
+		cout << mtx[i];
+	}
+	system("pause");
+	for (int i = 0; i < mtx_size; i++)
+	{
+		sizer = mtx[i].get_size(sizer);
+		for (int j=0; j < sizer; j++)
+		{
+			new_el = mtx[i].get_elem(j) * 2;
+			mtx[i].set_elem(j, new_el);
+		}
+	}
+	cout << "Class array*2: \n";
+	for (int i = 0; i < mtx_size; i++)
+	{
+		cout << mtx[i];
+	}
+	system("pause");
 	return 0;
 }
